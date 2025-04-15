@@ -1,0 +1,12 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 12px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}

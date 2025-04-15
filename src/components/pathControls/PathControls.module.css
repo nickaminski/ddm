@@ -1,0 +1,73 @@
+.switchGroup {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.switchButton {
+    padding: 0.2rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: 0.2s ease all;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.switchButton:hover {
+    background-color: #e0e0e0;
+}
+
+.switchButton.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    image-rendering: pixelated;
+}
+
+.rotateButtonWrapper {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+}
+
+.rotateButton {
+    width: 100%;
+    height: 100%;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eee;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 0;
+}
+
+.rotateButton:hover {
+    background: #ddd;
+}
+
+.hotkeyBadge {
+    position: absolute;
+    bottom: -2px;
+    right: -2px;
+    background: #444;
+    color: white;
+    font-size: 0.6rem;
+    padding: 2px 4px;
+    border-radius: 3px;
+    pointer-events: none;
+    opacity: 0.9;
+}

@@ -1,0 +1,61 @@
+/* components/PlayerTurnIndicator.module.css */
+
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+  
+.turn {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.player1 {
+    color: royalblue;
+}
+
+.player2 {
+    color: crimson;
+}
+
+.endTurnButton {
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    background-color: #4caf50;
+    color: white;
+}
+
+/* Add a subtle bounce/pulse when the button is active */
+.activePulse {
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6);
+    }
+    70% {
+        transform: scale(1.01);
+        box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+    }
+}
+
+/* When the button is disabled */
+.disabledButton {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+    animation: none;
+}

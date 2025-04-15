@@ -1,0 +1,1 @@
+export type Cell = null | { player: number };

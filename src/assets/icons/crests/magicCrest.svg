@@ -1,0 +1,11 @@
+<svg width="100" height="100" viewBox="0 0 100 100" xml:space="preserve">
+<g transform="matrix(1 0 0 1 50 50)" id="32f20c6c-ff24-42e0-a836-28401d0f30c8"  >
+<rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1; visibility: hidden;" vector-effect="non-scaling-stroke"  x="-50" y="-50" rx="0" ry="0" width="100" height="100" />
+</g>
+<g transform="matrix(2.34 0 0 2.34 50 50)" id="rect3759"  >
+<path style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: currentColor; fill-rule: evenodd; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-13.07, -12.05)" d="M 1.8517613 12.377761 L 19.018047 -4.0505597 L 14.039179 10.264071 L 24.289985 13.32661 L 6.0421461 28.140576 L 12.254563 15.654429 z" stroke-linecap="round" />
+</g>
+<g transform="matrix(2.31 0 0 2.31 50 50)" id="path2987"  >
+<path style="stroke: currentColor; stroke-width: 1.26932907; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: currentColor; fill-opacity: 0; fill-rule: nonzero; opacity: 1;" vector-effect="non-scaling-stroke"  transform=" translate(-22.76, -23.52)" d="M 40.200369 23.51906 C 40.200369 33.152492 32.390929 40.961931 22.757498000000002 40.961931 C 13.124066000000001 40.961931 5.314626700000002 33.152492 5.314626700000002 23.51906 C 5.314626700000002 13.885627999999999 13.124066000000003 6.076188999999999 22.757498000000002 6.076188999999999 C 32.390929 6.076188999999999 40.200369 13.885628 40.200369 23.51906 z" stroke-linecap="round" />
+</g>
+</svg>

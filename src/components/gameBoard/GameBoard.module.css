@@ -1,0 +1,38 @@
+.board {
+    display: grid;
+    grid-template-columns: repeat(19, 32px);
+    grid-template-rows: repeat(13, 32px);
+    gap: 1px;
+    background-color: #444;
+    border: 2px solid #222;
+    width: fit-content;
+    margin: 1rem auto;
+}
+  
+.cell {
+    width: 32px;
+    height: 32px;
+    background-color: #eee;
+    transition: background-color 0.2s;
+}
+  
+.cell:hover {
+    background-color: #bfbfbf;
+    cursor: pointer;
+}
+
+.invalid {
+  background-color: #ff39ef !important;
+}
+
+.player1 {
+  background-color: #42a5f5; /* blue */
+}
+
+.player2 {
+  background-color: #f43030; /* red */
+}
+  
+.preview {
+  background-color: #b2dfdb;
+}
