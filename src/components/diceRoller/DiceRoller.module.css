@@ -68,13 +68,30 @@
     text-align: center;
 }
 
-.symbol {
-    font-size: 0.9rem;
-    padding: 4px 8px;
-    border-radius: 4px;
-    margin: 4px 0;
-    text-transform: capitalize;
-    display: inline-block;
+.helpButton {
+    background-color: #f0f0f0;
+    color: #333;
+    border: none;
+    border-radius: 9999px;
+    padding: 0.4rem 0.7rem;
+    margin-right: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.helpButton:hover {
+    background-color: #e0e0e0;
+}
+
+.helpButton:active {
+    transform: scale(0.96);
+}
+
+.helpButton:focus {
+    outline: 2px solid #999;
 }
 
 /* Symbol Colors */

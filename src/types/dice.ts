@@ -1,4 +1,5 @@
 export type SymbolType = "summon1" | "summon2" | "summon3" | "summon4" | "progress" | "attack" | "magic" | "trap" | "defense";
+export type NonSummonSymbolType = Exclude<SymbolType, "summon1" | "summon2" | "summon3" | "summon4">;
 
 // Each face has 1–2 symbols, depending on balance
 export type DieFace = SymbolType[];

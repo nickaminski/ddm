@@ -1,0 +1,16 @@
+.crestPool {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.crestRow {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.crestCount {
+    font-weight: bold;
+    font-size: 1.25rem;
+}

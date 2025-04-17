@@ -22,17 +22,17 @@
 }
 
 .invalid {
-  background-color: #ff39ef !important;
+    background-color: #ff39ef !important;
 }
 
 .player1 {
-  background-color: #42a5f5; /* blue */
+    background-color: #42a5f5; /* blue */
 }
 
 .player2 {
-  background-color: #f43030; /* red */
+    background-color: #f43030; /* red */
 }
   
 .preview {
-  background-color: #b2dfdb;
+    background-color: #b2dfdb;
 }

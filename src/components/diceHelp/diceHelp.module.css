@@ -1,0 +1,23 @@
+.helpContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem auto;
+}
+
+.helpContainer > div {
+    display: flex;
+    flex-flow: column;
+    justify-content: start;
+    align-items: start;
+    gap: 16px;
+}
+
+.helpRow {
+    display: flex;
+    align-items: center;
+}
+
+.helpRow > label {
+    margin-right: 8px;
+}
