@@ -1,5 +1,4 @@
 export type Monster = {
-    id: string;
     player?: number;             // Who owns the monster
     name: string;
     level: number;

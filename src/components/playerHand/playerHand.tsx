@@ -1,28 +1,28 @@
-import { allCards, CardId } from "../../data/cards";
+import { allCards, CardKey } from "../../data/cards";
 import Card from "../card/card";
 import styles from "./playerHand.module.css";
 
 type Props = {
-    cardIds: CardId[];
+    cardKeys: CardKey[];
     playerId: number;
-    onCardSelect?: (cardId: CardId, summonable: boolean) => void;
-    selectedCard?: CardId | null;
+    onCardSelect?: (cardId: CardKey, summonable: boolean) => void;
+    selectedCardKey?: CardKey | null;
     summonableLevel?: number | null;
 };
 
-function PlayerHand({ cardIds, playerId, selectedCard, onCardSelect, summonableLevel }: Props) {
+function PlayerHand({ cardKeys: cardKeys, playerId, selectedCardKey, onCardSelect, summonableLevel }: Props) {
     return (
         <div className={styles.handContainer}>
-            {cardIds.map((cardId, idx) => {
-                const card = allCards[cardId];
-                const isSelected = selectedCard === cardId;
+            {cardKeys.map((key, idx) => {
+                const card = {...allCards[key]};
+                const isSelected = selectedCardKey === key;
                 const summonable = summonableLevel == card.level;
                 return (
-                    <Card key={`${idx}_${playerId}_${card.id}`} 
+                    <Card key={`${idx}_${playerId}_${key}`}
                           card={card}
                           isSelected={isSelected}
                           summonable={summonable}
-                          onCardSelect={onCardSelect}
+                          onClick={() => {onCardSelect?.(key, summonable)}}
                           summonableLevel={summonableLevel} />
                 );
             })}

@@ -1,4 +1,4 @@
-import { CardId } from "../../data/cards";
+import { MouseEventHandler } from "react";
 import { Monster } from "../../types/monster";
 import styles from "./card.module.css";
 
@@ -7,15 +7,15 @@ type Props = {
     summonableLevel?: number | null;
     isSelected: boolean;
     summonable: boolean;
-    onCardSelect?: (cardId: CardId, summonable: boolean) => void;
+    onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
-function Card({ card, summonableLevel, isSelected, summonable, onCardSelect }: Props) {
+function Card({ card, summonableLevel, isSelected, onClick }: Props) {
     return (
         <div className={`${styles.card}
                          ${isSelected ? styles.selected : 
                             card.level == summonableLevel ? styles.summonable : ""}`}
-             onClick={() => { onCardSelect?.(card.id as CardId, summonable)}}
+             onClick={onClick}
             >
             <img src={card.image} alt={card.name} />
             <div className={`${styles.statOverlay} ${styles.level}`}>⭐ {card.level}</div>

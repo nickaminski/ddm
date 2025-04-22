@@ -8,8 +8,15 @@
     font-family: sans-serif;
 }
 
+.playerName {
+    font-size: 1.25rem;
+}
+
+.healthContainer {
+    display: flex;
+    justify-content: center;
+}
+
 .score {
-    margin-bottom: 0.5rem;
-    font-weight: bold;
-    font-size: 1.2rem;
+    font-size: 2rem;
 }

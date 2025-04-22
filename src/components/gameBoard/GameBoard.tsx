@@ -12,10 +12,11 @@ type Props = {
     rotation: number;
     selectedPath: PathType;
     monsterAvailableToSummon: boolean;
+    monsterSelected: boolean;
     onPlaceTile: (row: number, col: number) => void;
 };
 
-function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, monsterAvailableToSummon, onPlaceTile, rotation, selectedPath } : Props) {
+function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, monsterAvailableToSummon, monsterSelected, onPlaceTile, rotation, selectedPath } : Props) {
     const [hoverCoords, setHoverCoords] = useState<[number, number] | null>(null);
 
     const rotatePathShape = (shape: PathShape): PathShape => shape.map(([r, c]) => [c, -r]);
@@ -96,7 +97,7 @@ function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, monster
             grid[r][c]?.player === 1 ? ` ${styles.player1}` : ` ${styles.player2}`;
         }
 
-        if (hoverCoords && diceRollAllowsSummon() && !hasPlacedTile && monsterAvailableToSummon) {
+        if (hoverCoords && diceRollAllowsSummon() && !hasPlacedTile && monsterAvailableToSummon && monsterSelected) {
             const [hr, hc] = hoverCoords;
             const shape = getRotatedPathShape();
             const isLegal = isPlacementLegal(hr, hc);

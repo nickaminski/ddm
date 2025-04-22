@@ -8,11 +8,12 @@ import { Cell } from './types/cell';
 import { CrestPoolModel } from './components/crestPool/crestPool';
 import PlayerStatus from './components/playerStatus/playerStatus';
 import PlayerHand from './components/playerHand/playerHand';
-import { allCards, CardId } from './data/cards';
+import { allCards, CardKey } from './data/cards';
 
 function App() {
     const ROWS = 13;
     const COLS = 19;
+    const MAX_HEART_POINTS = 3;
     const [currentPlayer, setCurrentPlayer] = useState<1 | 2>(1);
     const [hasRolled, setHasRolled] = useState(false);
     const [canSummon, setCanSummon] = useState(false);
@@ -22,8 +23,9 @@ function App() {
     const [monsterAvailableToSummon, setMonsterAvailableToSummon] = useState(false);
     const [rotation, setRotation] = useState<number>(0);
     const [selectedPathType, setSelectedPathType] = useState<PathType>("Cross");
-    const [selectedCard, setSelectedCard] = useState<CardId | null>(null);
+    const [selectedCard, setSelectedCard] = useState<CardKey | null>(null);
     const [summonableLevel, setSummonableLevel] = useState<number | null>(null);
+
     const [player1CrestPool, setPlayer1CrestPool] = useState<CrestPoolModel>([
         { type: "progress", count: 0 },
         { type: "attack", count: 0 },
@@ -31,7 +33,8 @@ function App() {
         { type: "magic", count: 0 },
         { type: "trap", count: 0 }
     ]);
-    const [player1Hand, setPlayer1Hand] = useState<CardId[]>(["darkMagician","blueEyesWhiteDragon"]);
+    const [player1Hand, setPlayer1Hand] = useState<CardKey[]>(["darkMagician","curseOfDragon", "wingedDragonGuardian", "mysticalElf"]);
+    const [player1Health, setPlayer1Health] = useState<number>(MAX_HEART_POINTS);
     const [player2CrestPool, setPlayer2CrestPool] = useState<CrestPoolModel>([
         { type: "progress", count: 0 },
         { type: "attack", count: 0 },
@@ -39,8 +42,9 @@ function App() {
         { type: "magic", count: 0 },
         { type: "trap", count: 0 }
     ]);
-    const [player2Hand, setPlayer2Hand] = useState<CardId[]>(["darkMagician","blueEyesWhiteDragon"]);
+    const [player2Hand, setPlayer2Hand] = useState<CardKey[]>(["blueEyesWhiteDragon", "darkAssailant", "lordOfD", "vorseRaider"]);
     const [selectedSet, setSelectedSet] = useState<number>(0);
+    const [player2Health, setPlayer2Health] = useState<number>(MAX_HEART_POINTS);
 
     const createEmptyCell = (): Cell => ({
         player: null,
@@ -165,7 +169,7 @@ function App() {
         setMonsterAvailableToSummon(false);
     };
 
-    const handleCardSelect = (cardId: CardId, summonable: boolean) => {
+    const handleCardSelect = (cardId: CardKey, summonable: boolean) => {
         if (canSummon && summonable)
             setSelectedCard(cardId);
         if (!hasRolled) {
@@ -187,7 +191,7 @@ function App() {
         <div style={{ padding: "2rem", textAlign: "center" }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ marginRight: '1rem' }}>
-                    <PlayerStatus player={1} heartPoints={3} crestPool={player1CrestPool} />
+                    <PlayerStatus player={1} maxHeartPoints={MAX_HEART_POINTS} heartPoints={2} crestPool={player1CrestPool} />
                 </div>
                 <GameBoard grid={grid}
                         currentPlayer={currentPlayer}
@@ -196,17 +200,18 @@ function App() {
                         rotation={rotation}
                         selectedPath={selectedPathType}
                         monsterAvailableToSummon={monsterAvailableToSummon}
+                        monsterSelected={selectedCard != null}
                         onPlaceTile={handlePlaceTile} />
                 <div style={{ marginLeft: '1rem' }}>
-                    <PlayerStatus player={2} heartPoints={3} crestPool={player2CrestPool} />
+                    <PlayerStatus player={2} maxHeartPoints={MAX_HEART_POINTS} heartPoints={1} crestPool={player2CrestPool} />
                 </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center' }}>
                 <div style={{ marginRight: '1rem' }}>
                     <PlayerHand playerId={1} 
-                                cardIds={player1Hand}
+                                cardKeys={player1Hand}
                                 onCardSelect={handleCardSelect}
-                                selectedCard={selectedCard}
+                                selectedCardKey={selectedCard}
                                 summonableLevel={summonableLevel}/>
                 </div>
 
@@ -226,7 +231,7 @@ function App() {
 
                 <div style={{marginLeft: '1rem' }}>
                     <PlayerHand playerId={2} 
-                                cardIds={player2Hand}/>
+                                cardKeys={player2Hand}/>
                 </div>
             </div>
         </div>
