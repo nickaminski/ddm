@@ -1,22 +1,26 @@
 import { JSX, useState } from "react";
 import styles from "./GameBoard.module.css";
-import { DieFace } from "../../types/dice";
 import { PATH_SHAPES, PathShape, PathType } from "../../types/path";
 import { Cell } from "../../types/cell";
+import { Monster } from "../../types/monster";
+
+type Position = [number, number];
 
 type Props = {
     grid: Cell[][];
     currentPlayer: 1 | 2;
-    diceRollResults: DieFace[];
     hasPlacedTile: boolean;
     rotation: number;
     selectedPath: PathType;
     monsterAvailableToSummon: boolean;
-    monsterSelected: boolean;
-    onPlaceTile: (row: number, col: number) => void;
+    cardSelected: boolean;
+    selectedMonster: Monster | null;
+    onClickTile: (row: number, col: number) => void;
+    isPlacementLegal: (row: number, col: number) => boolean;
+    diceRollAllowsSummon: () => boolean;
 };
 
-function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, monsterAvailableToSummon, monsterSelected, onPlaceTile, rotation, selectedPath } : Props) {
+function GameBoard({grid, hasPlacedTile, monsterAvailableToSummon, currentPlayer, cardSelected, selectedMonster, onClickTile, isPlacementLegal, diceRollAllowsSummon, rotation, selectedPath } : Props) {
     const [hoverCoords, setHoverCoords] = useState<[number, number] | null>(null);
 
     const rotatePathShape = (shape: PathShape): PathShape => shape.map(([r, c]) => [c, -r]);
@@ -29,51 +33,6 @@ function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, monster
         return shape;
     };
 
-    const diceRollAllowsSummon = (): boolean => {
-        const allSymbols = diceRollResults.flat();
-        const summonCount = allSymbols.filter(sym => sym.startsWith("summon")).length;
-        return summonCount >= 2;
-    };
-
-    const isPlacementLegal = (row: number, col: number): boolean => {
-        const shape = getRotatedPathShape();
-        let connectsToOwnPath = false;
-
-        for (const [dr, dc] of shape) {
-            const r = row + dr;
-            const c = col + dc;
-
-            // Out of bounds
-            if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length) {
-                return false;
-            }
-
-            // Overlapping
-            if (grid[r][c].player !== null) return false;
-
-            // Check neighbors for own path
-            const neighbors = [
-                [r - 1, c],
-                [r + 1, c],
-                [r, c - 1],
-                [r, c + 1],
-            ];
-
-            for (const [nr, nc] of neighbors) {
-                if (
-                    nr >= 0 &&
-                    nr < grid.length &&
-                    nc >= 0 &&
-                    nc < grid[0].length &&
-                    grid[nr][nc]?.player === currentPlayer
-                ) {
-                    connectsToOwnPath = true;
-                }
-            }
-        }
-        return connectsToOwnPath;
-    };
-
     const handleMouseEnter = (row: number, col: number) => {
         setHoverCoords([row, col]);
     };
@@ -82,10 +41,33 @@ function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, monster
         setHoverCoords(null);
     };
 
-    const handleClick = (row: number, col: number) => {
-        if (!hasPlacedTile && diceRollAllowsSummon() && isPlacementLegal(row, col)) {
-            onPlaceTile(row, col);
+    const findMonsterPosition = (monster: Monster): Position | null  =>  {
+        for (let r = 0; r < grid.length; r++) {
+            for (let c = 0; c < grid[r].length; c++) {
+                const found = grid[r][c].monster;
+                if (found && found.id == monster.id) {
+                    return [r, c];
+                }
+            }
         }
+        return null;
+    };
+
+    const getValidMovementTargets = ([r, c]: Position): Position[] | null  =>  {
+        const directions: Position[] = [
+            [-1, 0], // up
+            [1, 0],  // down
+            [0, -1], // left
+            [0, 1],  // right
+        ];
+
+        return directions.map(([dr, dc]) => [r + dr, c + dc] as Position)
+                         .filter(([nr, nc]) => nr >= 0 &&
+                                               nr <= grid.length &&
+                                               nc >= 0 &&
+                                               nc < grid[0].length &&
+                                               grid[nr][nc].player === currentPlayer &&
+                                               !grid[nr][nc].monster);
     };
 
     const renderCell = (r: number, c: number): JSX.Element => {
@@ -97,7 +79,7 @@ function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, monster
             grid[r][c]?.player === 1 ? ` ${styles.player1}` : ` ${styles.player2}`;
         }
 
-        if (hoverCoords && diceRollAllowsSummon() && !hasPlacedTile && monsterAvailableToSummon && monsterSelected) {
+        if (hoverCoords && diceRollAllowsSummon() && !hasPlacedTile && monsterAvailableToSummon && cardSelected) {
             const [hr, hc] = hoverCoords;
             const shape = getRotatedPathShape();
             const isLegal = isPlacementLegal(hr, hc);
@@ -109,11 +91,25 @@ function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, monster
             }
         }
 
+        if (selectedMonster) {
+            const from = findMonsterPosition(selectedMonster);
+            if (from && from[0] === r && from[1] === c) {
+                cellClass += ` ${styles.selectedMonster}`;
+            }
+
+            if (from) {
+                const validTargets = getValidMovementTargets(from);
+                if (validTargets?.some(([vr, vc]) => vr === r && vc === c)) {
+                    cellClass += ` ${styles.movable}`;
+                }
+            }
+        }
+
         return (
             <div
                 key={`${r}-${c}`}
                 className={cellClass}
-                onClick={() => handleClick(r, c)}
+                onClick={() => onClickTile(r, c)}
                 onMouseEnter={() => handleMouseEnter(r, c)}
                 onMouseLeave={handleMouseLeave}
             >

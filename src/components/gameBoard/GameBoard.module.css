@@ -43,3 +43,13 @@
     pointer-events: none;
     image-rendering: pixelated;
 }
+
+.selectedMonster {
+    outline: 5px solid limegreen;
+    z-index: 1;
+}
+
+.movable {
+    background-color: rgba(0, 255, 0, 0.2);
+    cursor: pointer;
+}

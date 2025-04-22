@@ -1,5 +1,3 @@
-
-
 import { useEffect, useState } from "react";
 import styles from "./playerHealth.module.css";
 
@@ -20,7 +18,7 @@ function PlayerHealth({currentHealth, maxHealth}: Props) {
             const timer = setTimeout(() => {
                 setPrevHealth(currentHealth);
                 setFadingIndex(null);
-            }, 1000); // this time should match the transition: opacity 5s ease time in the css
+            }, 1000); // this time should match the transition: opacity 1s ease time in the css
             return () => clearTimeout(timer);
         }
 

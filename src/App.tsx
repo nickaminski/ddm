@@ -9,6 +9,7 @@ import { CrestPoolModel } from './components/crestPool/crestPool';
 import PlayerStatus from './components/playerStatus/playerStatus';
 import PlayerHand from './components/playerHand/playerHand';
 import { allCards, CardKey } from './data/cards';
+import { Monster } from './types/monster';
 
 function App() {
     const ROWS = 13;
@@ -21,6 +22,7 @@ function App() {
     const [hasPlacedTile, setHasPlacedTile] = useState(false);
     const [canEndTurn, setCanEndTurn] = useState(false);
     const [monsterAvailableToSummon, setMonsterAvailableToSummon] = useState(false);
+    const [selectedMonster, setSelectedMonster] = useState<Monster | null>(null);
     const [rotation, setRotation] = useState<number>(0);
     const [selectedPathType, setSelectedPathType] = useState<PathType>("Cross");
     const [selectedCard, setSelectedCard] = useState<CardKey | null>(null);
@@ -146,6 +148,59 @@ function App() {
         setSelectedPathType(newType);
     }
 
+    const diceRollAllowsSummon = (): boolean => {
+        const allSymbols = diceRollResults.flat();
+        const summonCount = allSymbols.filter(sym => sym.startsWith("summon")).length;
+        return summonCount >= 2;
+    };
+
+    const handleClickTile = (row: number, col: number) => {
+        if (!hasPlacedTile && diceRollAllowsSummon() && isPlacementLegal(row, col)) {
+            handlePlaceTile(row, col);
+        } else if (canEndTurn) {
+            handleSelectMonsterOnBoard(row, col);
+        }
+    };
+
+    const isPlacementLegal = (row: number, col: number): boolean => {
+        const shape = getRotatedPathShape();
+        let connectsToOwnPath = false;
+
+        for (const [dr, dc] of shape) {
+            const r = row + dr;
+            const c = col + dc;
+
+            // Out of bounds
+            if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length) {
+                return false;
+            }
+
+            // Overlapping
+            if (grid[r][c].player !== null) return false;
+
+            // Check neighbors for own path
+            const neighbors = [
+                [r - 1, c],
+                [r + 1, c],
+                [r, c - 1],
+                [r, c + 1],
+            ];
+
+            for (const [nr, nc] of neighbors) {
+                if (
+                    nr >= 0 &&
+                    nr < grid.length &&
+                    nc >= 0 &&
+                    nc < grid[0].length &&
+                    grid[nr][nc]?.player === currentPlayer
+                ) {
+                    connectsToOwnPath = true;
+                }
+            }
+        }
+        return connectsToOwnPath;
+    };
+
     const handlePlaceTile = (row: number, col: number) => {
         if (!selectedCard) return;
 
@@ -156,7 +211,9 @@ function App() {
             const r = row + dr;
             const c = col + dc;
             if (dr == 0 && dc == 0) {
-                newGrid[r][c] = { player: currentPlayer, monster: { player: currentPlayer, ...allCards[selectedCard] } };
+                newGrid[r][c] = { player: currentPlayer, monster: { player: currentPlayer, 
+                                                                    id: Math.random() * 100000000000,
+                                                                    ...allCards[selectedCard] } };
             } else {
                 newGrid[r][c] = { player: currentPlayer };
             }
@@ -167,6 +224,13 @@ function App() {
         setSelectedCard(null);
         setSummonableLevel(null);
         setMonsterAvailableToSummon(false);
+    };
+
+    const handleSelectMonsterOnBoard = (row: number, col: number) => {
+        if (grid[row][col].monster?.player == currentPlayer)
+            setSelectedMonster(grid[row][col].monster!);
+        else
+            setSelectedMonster(null);
     };
 
     const handleCardSelect = (cardId: CardKey, summonable: boolean) => {
@@ -191,19 +255,21 @@ function App() {
         <div style={{ padding: "2rem", textAlign: "center" }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <div style={{ marginRight: '1rem' }}>
-                    <PlayerStatus player={1} maxHeartPoints={MAX_HEART_POINTS} heartPoints={2} crestPool={player1CrestPool} />
+                    <PlayerStatus player={1} maxHealth={MAX_HEART_POINTS} currentHealth={player1Health} crestPool={player1CrestPool} />
                 </div>
                 <GameBoard grid={grid}
-                        currentPlayer={currentPlayer}
-                        diceRollResults={diceRollResults}
-                        hasPlacedTile={hasPlacedTile}
-                        rotation={rotation}
-                        selectedPath={selectedPathType}
-                        monsterAvailableToSummon={monsterAvailableToSummon}
-                        monsterSelected={selectedCard != null}
-                        onPlaceTile={handlePlaceTile} />
+                           currentPlayer={currentPlayer}
+                           hasPlacedTile={hasPlacedTile}
+                           rotation={rotation}
+                           selectedPath={selectedPathType}
+                           monsterAvailableToSummon={monsterAvailableToSummon}
+                           cardSelected={selectedCard != null}
+                           selectedMonster={selectedMonster}
+                           onClickTile={handleClickTile}
+                           isPlacementLegal={isPlacementLegal}
+                           diceRollAllowsSummon={diceRollAllowsSummon} />
                 <div style={{ marginLeft: '1rem' }}>
-                    <PlayerStatus player={2} maxHeartPoints={MAX_HEART_POINTS} heartPoints={1} crestPool={player2CrestPool} />
+                    <PlayerStatus player={2} maxHealth={MAX_HEART_POINTS} currentHealth={player2Health} crestPool={player2CrestPool} />
                 </div>
             </div>
             <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'center' }}>
