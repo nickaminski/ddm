@@ -9,7 +9,7 @@ import { CrestPoolModel } from './components/crestPool/crestPool';
 import PlayerStatus from './components/playerStatus/playerStatus';
 import PlayerHand from './components/playerHand/playerHand';
 import { allCards, CardKey } from './data/cards';
-import { Monster } from './types/monster';
+import { Position } from './types/position';
 
 function App() {
     const ROWS = 13;
@@ -22,7 +22,7 @@ function App() {
     const [hasPlacedTile, setHasPlacedTile] = useState(false);
     const [canEndTurn, setCanEndTurn] = useState(false);
     const [monsterAvailableToSummon, setMonsterAvailableToSummon] = useState(false);
-    const [selectedMonster, setSelectedMonster] = useState<Monster | null>(null);
+    const [selectedMonsterPosition, setSelectedMonsterPosition] = useState<Position | null>(null);
     const [rotation, setRotation] = useState<number>(0);
     const [selectedPathType, setSelectedPathType] = useState<PathType>("Cross");
     const [selectedCard, setSelectedCard] = useState<CardKey | null>(null);
@@ -72,6 +72,7 @@ function App() {
         setCanSummon(false);
         setSummonableLevel(null);
         setMonsterAvailableToSummon(false);
+        setSelectedMonsterPosition(null);
     }
 
     useEffect(() => {
@@ -157,9 +158,83 @@ function App() {
     const handleClickTile = (row: number, col: number) => {
         if (!hasPlacedTile && diceRollAllowsSummon() && isPlacementLegal(row, col)) {
             handlePlaceTile(row, col);
+        } else if (selectedMonsterPosition && canMoveSelectedMonsterTo(row, col)) {
+            handleMoveSelectedMonster(row, col);
         } else if (canEndTurn) {
             handleSelectMonsterOnBoard(row, col);
         }
+    };
+
+    const handleMoveSelectedMonster = (targetRow: number, targetCol: number) => {
+        if (!selectedMonsterPosition) return;
+
+        const prevPos = selectedMonsterPosition;
+        const monster = grid[prevPos[0]][prevPos[1]].monster;
+
+        if (currentPlayer === 1 && !canSpendCrests(player1CrestPool, "progress", monster?.flying ? 2 : 1)) {
+            return
+        } else if (currentPlayer === 2 && !canSpendCrests(player2CrestPool, "progress", monster?.flying ? 2 : 1)) {
+            return;
+        }
+
+        
+        setGrid(prevGrid => {
+            const newGrid = prevGrid.map(row => row.map(cell => ({ ...cell })));
+            
+            monster!.position = [targetRow, targetCol];
+            
+            newGrid[prevPos[0]][prevPos[1]].monster = undefined;
+            newGrid[targetRow][targetCol].monster = monster;
+
+            return newGrid;
+        });
+
+        if (currentPlayer === 1) {
+            setPlayer1CrestPool(prev => spendCrests(prev, "progress", monster?.flying ? 2 : 1));
+        } else if (currentPlayer === 2) {
+            setPlayer2CrestPool(prev => spendCrests(prev, "progress",  monster?.flying ? 2 : 1));
+        }
+        
+        setSelectedMonsterPosition([targetRow, targetCol]);
+    };
+
+    const spendCrests = (crestPool: CrestPoolModel, type: NonSummonSymbolType, amount: number): CrestPoolModel => {
+        return crestPool.map(entry =>
+            entry.type === type && entry.count >= amount 
+                ? { ...entry, count: entry.count - amount }
+                : entry
+        );
+    }
+
+    const canSpendCrests = (crestPool: CrestPoolModel, type: NonSummonSymbolType, amount: number = 1): boolean => {
+        const entry = crestPool.find(e => e.type === type);
+        return !!entry && entry.count >= amount;
+    };
+
+    const canMoveSelectedMonsterTo = (row: number, col: number): boolean => {
+        if (!selectedMonsterPosition) return false;
+        const validTargets= getValidMovementTargets(selectedMonsterPosition);
+        if (validTargets?.some(([vr, vc]) => vr === row && vc === col)) {
+            return true;
+        }
+        return false;
+    };
+
+    const getValidMovementTargets = ([r, c]: Position): Position[] | null  =>  {
+        const directions: Position[] = [
+            [-1, 0], // up
+            [1, 0],  // down
+            [0, -1], // left
+            [0, 1],  // right
+        ];
+
+        return directions.map(([dr, dc]) => [r + dr, c + dc] as Position)
+                         .filter(([nr, nc]) => nr >= 0 &&
+                                               nr <= grid.length &&
+                                               nc >= 0 &&
+                                               nc < grid[0].length &&
+                                               !!grid[nr][nc].player &&
+                                               !grid[nr][nc].monster);
     };
 
     const isPlacementLegal = (row: number, col: number): boolean => {
@@ -213,6 +288,7 @@ function App() {
             if (dr == 0 && dc == 0) {
                 newGrid[r][c] = { player: currentPlayer, monster: { player: currentPlayer, 
                                                                     id: Math.random() * 100000000000,
+                                                                    position: [r, c],
                                                                     ...allCards[selectedCard] } };
             } else {
                 newGrid[r][c] = { player: currentPlayer };
@@ -228,9 +304,9 @@ function App() {
 
     const handleSelectMonsterOnBoard = (row: number, col: number) => {
         if (grid[row][col].monster?.player == currentPlayer)
-            setSelectedMonster(grid[row][col].monster!);
+            setSelectedMonsterPosition([row, col]);
         else
-            setSelectedMonster(null);
+            setSelectedMonsterPosition(null);
     };
 
     const handleCardSelect = (cardId: CardKey, summonable: boolean) => {
@@ -258,16 +334,16 @@ function App() {
                     <PlayerStatus player={1} maxHealth={MAX_HEART_POINTS} currentHealth={player1Health} crestPool={player1CrestPool} />
                 </div>
                 <GameBoard grid={grid}
-                           currentPlayer={currentPlayer}
                            hasPlacedTile={hasPlacedTile}
                            rotation={rotation}
                            selectedPath={selectedPathType}
                            monsterAvailableToSummon={monsterAvailableToSummon}
                            cardSelected={selectedCard != null}
-                           selectedMonster={selectedMonster}
+                           selectedMonsterPosition={selectedMonsterPosition}
                            onClickTile={handleClickTile}
                            isPlacementLegal={isPlacementLegal}
-                           diceRollAllowsSummon={diceRollAllowsSummon} />
+                           diceRollAllowsSummon={diceRollAllowsSummon}
+                           canMoveSelectedMonsterTo={canMoveSelectedMonsterTo} />
                 <div style={{ marginLeft: '1rem' }}>
                     <PlayerStatus player={2} maxHealth={MAX_HEART_POINTS} currentHealth={player2Health} crestPool={player2CrestPool} />
                 </div>

@@ -12,7 +12,8 @@ export const allCards = {
         attack: 40,
         defense: 30,
         image: monsterAssets.blueeyes.cardImage,
-        icon: monsterAssets.blueeyes.icon
+        icon: monsterAssets.blueeyes.icon,
+        flying: true
     },
     darkAssailant: {
         name: "Dark Assailant",
@@ -22,7 +23,8 @@ export const allCards = {
         attack: 10,
         defense: 20,
         image: monsterAssets.darkassailant.cardImage,
-        icon: monsterAssets.darkassailant.icon
+        icon: monsterAssets.darkassailant.icon,
+        flying: false
     },
     lordOfD: {
         name: "Lord of D.",
@@ -32,7 +34,8 @@ export const allCards = {
         attack: 10,
         defense: 10,
         image: monsterAssets.lordofd.cardImage,
-        icon: monsterAssets.lordofd.icon
+        icon: monsterAssets.lordofd.icon,
+        flying: false
     },
     vorseRaider: {
         name: "Vorse Raider",
@@ -42,7 +45,8 @@ export const allCards = {
         attack: 20,
         defense: 10,
         image: monsterAssets.vorseraider.cardImage,
-        icon: monsterAssets.vorseraider.icon
+        icon: monsterAssets.vorseraider.icon,
+        flying: false
     },
     mysticalElf: {
         name: "Mystical Elf",
@@ -52,7 +56,8 @@ export const allCards = {
         attack: 10,
         defense: 20,
         image: monsterAssets.mysticalelf.cardImage,
-        icon: monsterAssets.mysticalelf.icon
+        icon: monsterAssets.mysticalelf.icon,
+        flying: false
     },
     wingedDragonGuardian: {
         name: "Winged Dragon, Guardian of the Fortress #1",
@@ -62,7 +67,8 @@ export const allCards = {
         attack: 10,
         defense: 10,
         image: monsterAssets.wingeddragonguardian.cardImage,
-        icon: monsterAssets.wingeddragonguardian.icon
+        icon: monsterAssets.wingeddragonguardian.icon,
+        flying: true
     },
     curseOfDragon: {
         name: "Curse of Dragon",
@@ -72,7 +78,8 @@ export const allCards = {
         attack: 20,
         defense: 20,
         image: monsterAssets.curseofdragon.cardImage,
-        icon: monsterAssets.curseofdragon.icon
+        icon: monsterAssets.curseofdragon.icon,
+        flying: true
     },
     darkMagician: {
         name: "Dark Magician",
@@ -82,7 +89,8 @@ export const allCards = {
         attack: 40,
         defense: 20,
         image: monsterAssets.darkmagician.cardImage,
-        icon: monsterAssets.darkmagician.icon
+        icon: monsterAssets.darkmagician.icon,
+        flying: false
     },
 
 } satisfies Record<string, Monster>;

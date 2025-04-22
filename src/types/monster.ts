@@ -1,5 +1,7 @@
+import { Position } from "./position";
+
 export type Monster = {
-    id: number;
+    id?: number;
     player?: number;             // Who owns the monster
     name: string;
     level: number;
@@ -9,4 +11,6 @@ export type Monster = {
     health: number;
     image: string;
     icon: string;
+    position?: Position;
+    flying: boolean;
 }
