@@ -1,27 +1,22 @@
+import { useEffect, useState } from "react";
 import CrestPool, { CrestPoolModel } from "../crestPool/crestPool";
 import styles from "./playerStatus.module.css";
+import PlayerHealth from "../playerHealth/playerHealth";
 
 type Props = {
     player: 1 | 2;
-    maxHeartPoints: number;
-    heartPoints: number;
+    maxHealth: number;
+    currentHealth: number;
     crestPool: CrestPoolModel;
 };
 
-function PlayerStatus({ player, maxHeartPoints, heartPoints, crestPool }: Props) {
-    const health = Array.from({length: heartPoints});
-    const missingHealth = Array.from({length: maxHeartPoints - heartPoints});
+function PlayerStatus({ player, maxHealth, currentHealth, crestPool }: Props) {
+    
+
     return(
         <div className={styles.container}>
             <div className={styles.playerName}>Player {player}</div>
-            <div className={styles.healthContainer}>
-                {health.map((_, i) => (
-                    <div key={i} className={styles.score}>❤️</div>
-                ))}
-                {missingHealth.map((_, i) => (
-                    <div key={i} className={styles.score}>🖤</div>
-                ))}
-            </div>
+            <PlayerHealth currentHealth={currentHealth} maxHealth={maxHealth} />
             <CrestPool crestCounts={crestPool} iconSize={32} />
         </div>
     );

@@ -11,12 +11,3 @@
 .playerName {
     font-size: 1.25rem;
 }
-
-.healthContainer {
-    display: flex;
-    justify-content: center;
-}
-
-.score {
-    font-size: 2rem;
-}
