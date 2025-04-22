@@ -17,6 +17,8 @@ type Props = {
     setDiceRollResults: React.Dispatch<React.SetStateAction<DieFace[]>>;
     hasRolled: boolean;
     setHasRolled: (rolled: boolean) => void;
+    selectedSet: number;
+    onSelectedSet: (val: number) => void;
 
     selectedPathType: PathType;
     onPathTypeChange: (path: PathType) => void;
@@ -26,6 +28,7 @@ type Props = {
 function TurnControls({ canSummon,
                         currentPlayer, canEndTurn, onEndTurn, 
                         diceRollResults, setDiceRollResults, hasRolled, setHasRolled,
+                        selectedSet, onSelectedSet,
                         selectedPathType, onPathTypeChange, setRotation }: Props) {
     return(
         <div className={styles.container}>
@@ -36,7 +39,9 @@ function TurnControls({ canSummon,
             <DiceRoller diceRollResults={diceRollResults}
                         setDiceRollResults={setDiceRollResults}
                         hasRolled={hasRolled}
-                        setHasRolled={setHasRolled} />
+                        setHasRolled={setHasRolled}
+                        selectedSet={selectedSet}
+                        onSelectedSet={onSelectedSet} />
 
             {canSummon && <PathControls selectedPathType={selectedPathType}
                                         onPathTypeChange={onPathTypeChange}

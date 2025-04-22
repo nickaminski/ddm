@@ -1,0 +1,13 @@
+.handContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    scrollbar-width: none; /* Firefox */
+}
+
+.handContainer::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+}

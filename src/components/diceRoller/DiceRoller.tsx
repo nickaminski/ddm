@@ -1,4 +1,3 @@
-// components/DiceRoller.tsx
 import { useState } from "react";
 import styles from "./DiceRoller.module.css";
 import { DICE_SETS, DieFace } from "../../types/dice";
@@ -11,14 +10,16 @@ type Props = {
     setDiceRollResults: React.Dispatch<React.SetStateAction<DieFace[]>>;
     hasRolled: boolean;
     setHasRolled: (rolled: boolean) => void;
+    selectedSet: number;
+    onSelectedSet: (val: number) => void;
 };
 
-function DiceRoller({ diceRollResults, setDiceRollResults, hasRolled, setHasRolled }: Props) {
-    const [selectedSet, setSelectedSet] = useState(1);
+function DiceRoller({ diceRollResults, setDiceRollResults, hasRolled, setHasRolled, selectedSet, onSelectedSet }: Props) {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     const rollDice = () => {
-        if (hasRolled) return;    
+        if (hasRolled) return;
+        
         const set = DICE_SETS[selectedSet];
         const result: DieFace[] = [];
 
@@ -43,7 +44,7 @@ function DiceRoller({ diceRollResults, setDiceRollResults, hasRolled, setHasRoll
                     id="dice-level"
                     value={selectedSet}
                     className={styles.diceLevelSelect}
-                    onChange={(e) => setSelectedSet(Number(e.target.value))}
+                    onChange={(e) => onSelectedSet(Number(e.target.value))}
                     disabled={hasRolled}>
                         {DICE_SETS.map((_, index) => (
                             <option key={index} value={index}>

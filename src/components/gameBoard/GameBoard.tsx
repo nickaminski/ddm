@@ -11,10 +11,11 @@ type Props = {
     hasPlacedTile: boolean;
     rotation: number;
     selectedPath: PathType;
+    monsterAvailableToSummon: boolean;
     onPlaceTile: (row: number, col: number) => void;
 };
 
-function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, onPlaceTile, rotation, selectedPath } : Props) {
+function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, monsterAvailableToSummon, onPlaceTile, rotation, selectedPath } : Props) {
     const [hoverCoords, setHoverCoords] = useState<[number, number] | null>(null);
 
     const rotatePathShape = (shape: PathShape): PathShape => shape.map(([r, c]) => [c, -r]);
@@ -27,7 +28,7 @@ function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, onPlace
         return shape;
     };
 
-    const canPlaceTileThisTurn = (): boolean => {
+    const diceRollAllowsSummon = (): boolean => {
         const allSymbols = diceRollResults.flat();
         const summonCount = allSymbols.filter(sym => sym.startsWith("summon")).length;
         return summonCount >= 2;
@@ -42,10 +43,12 @@ function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, onPlace
             const c = col + dc;
 
             // Out of bounds
-            if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length) return false;
+            if (r < 0 || r >= grid.length || c < 0 || c >= grid[0].length) {
+                return false;
+            }
 
             // Overlapping
-            if (grid[r][c] !== null) return false;
+            if (grid[r][c].player !== null) return false;
 
             // Check neighbors for own path
             const neighbors = [
@@ -79,20 +82,21 @@ function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, onPlace
     };
 
     const handleClick = (row: number, col: number) => {
-        if (!hasPlacedTile && canPlaceTileThisTurn() && isPlacementLegal(row, col)) {
+        if (!hasPlacedTile && diceRollAllowsSummon() && isPlacementLegal(row, col)) {
             onPlaceTile(row, col);
         }
     };
 
     const renderCell = (r: number, c: number): JSX.Element => {
+        const cell = grid[r][c];
         let cellClass = styles.cell;
 
-        if (grid[r][c]) {
+        if (grid[r][c].player) {
             cellClass +=
             grid[r][c]?.player === 1 ? ` ${styles.player1}` : ` ${styles.player2}`;
         }
 
-        if (hoverCoords && canPlaceTileThisTurn() && !hasPlacedTile) {
+        if (hoverCoords && diceRollAllowsSummon() && !hasPlacedTile && monsterAvailableToSummon) {
             const [hr, hc] = hoverCoords;
             const shape = getRotatedPathShape();
             const isLegal = isPlacementLegal(hr, hc);
@@ -111,7 +115,15 @@ function GameBoard({grid, currentPlayer, diceRollResults, hasPlacedTile, onPlace
                 onClick={() => handleClick(r, c)}
                 onMouseEnter={() => handleMouseEnter(r, c)}
                 onMouseLeave={handleMouseLeave}
-            />
+            >
+                {cell.monster && (
+                    <img
+                        src={cell.monster.icon}
+                        alt={cell.monster.name}
+                        className={styles.monsterIcon}
+                    />
+                )}
+            </div>
         );
     };
 

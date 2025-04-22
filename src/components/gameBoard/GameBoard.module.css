@@ -36,3 +36,10 @@
 .preview {
     background-color: #b2dfdb;
 }
+
+.monsterIcon {
+    width: 32px;
+    height: 32px;
+    pointer-events: none;
+    image-rendering: pixelated;
+}
